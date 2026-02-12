@@ -207,7 +207,7 @@
       display:none;
       opacity:0;
       transform: translateY(8px);
-      transition: opacity .35s ease, transform .35s ease;
+      transition: opacity .8s ease, transform .8s ease;
     }
     .screen.active{
       display:block;
@@ -215,6 +215,31 @@
     .screen.show{
       opacity:1;
       transform: translateY(0);
+    }
+
+    /* content reveal: top to bottom */
+    .screen > *{
+      opacity: 0;
+      transform: translateY(-14px);
+    }
+    .screen.show > *{
+      animation: revealDown .65s ease forwards;
+    }
+    .screen.show > *:nth-child(1){ animation-delay: .04s; }
+    .screen.show > *:nth-child(2){ animation-delay: .12s; }
+    .screen.show > *:nth-child(3){ animation-delay: .2s; }
+    .screen.show > *:nth-child(4){ animation-delay: .28s; }
+    .screen.show > *:nth-child(5){ animation-delay: .36s; }
+    .screen.show > *:nth-child(6){ animation-delay: .44s; }
+    @keyframes revealDown{
+      from{
+        opacity: 0;
+        transform: translateY(-14px);
+      }
+      to{
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* floating hearts background */
@@ -371,7 +396,7 @@
         <p>Choose how this Valentine chapter should feel:</p>
 
         <div class="choice-grid" id="ideaGrid">
-          <button class="choice" data-idea="Cozy movie night">🎥 Movie Night</button>
+          <button class="choice" data-idea="Cozy movie date">🎥 Movie Date</button>
           <button class="choice" data-idea="Golden-hour picnic">🧺 Picnic Date</button>
           <button class="choice" data-idea="Sweet dessert run">🍫 Dessert Mission</button>
           <button class="choice" data-idea="Sunset walk together">🌅 Sunset Walk</button>
@@ -403,8 +428,11 @@
     const $ = (id) => document.getElementById(id);
     const bgm = $("bgm");
 
-    function startMusic(){
+    function startMusic(fromBeginning = false){
       if(!bgm) return;
+      if(fromBeginning){
+        bgm.currentTime = 0;
+      }
       bgm.volume = 0.45;
       bgm.play().catch(() => {});
     }
@@ -423,8 +451,11 @@
         from.classList.remove("active");
         // show new
         to.classList.add("active");
-        requestAnimationFrame(() => to.classList.add("show"));
-      }, 220);
+        void to.offsetWidth;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => to.classList.add("show"));
+        });
+      }, 620);
     }
 
     function random(min, max){ return Math.random() * (max - min) + min; }
@@ -625,7 +656,7 @@
           resetNoButtonState();
           moveNo();
         }, 50);
-      }, 1450);
+      }, 2800);
     });
 
     yesBtn.addEventListener("click", goYes);
@@ -646,6 +677,7 @@
       selectedIdea = "";
       ideas.forEach((item) => item.classList.remove("selected"));
       showScreen("screen5", "screen1");
+      startMusic(true);
     });
 
     // start animation on first screen
