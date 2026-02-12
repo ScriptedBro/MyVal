@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Question for You...</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
+
+    :root{
+      --bg1:#ff7aa8;
+      --bg2:#ffd1dc;
+      --card:#ffffffcc;
+      --text:#1b1b1f;
+      --muted:#5b5b66;
+      --accent:#ff2d55;
+      --accent2:#ff4d7d;
+      --shadow: 0 20px 60px rgba(0,0,0,.18);
+      --radius: 28px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; font-family: "DM Sans", "Segoe UI", sans-serif; color:var(--text); }
+
+    body{
+      overflow:hidden;
+      background: radial-gradient(1200px 700px at 15% 20%, #ffffff55 0%, transparent 55%),
+                  radial-gradient(900px 600px at 80% 30%, #ffffff44 0%, transparent 60%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      display:grid;
+      place-items:center;
+      padding:18px;
+    }
+
+    .wrap{
+      width:min(520px, 92vw);
+      position:relative;
+      z-index:2;
+    }
+
+    .card{
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid #ffffff66;
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#ffffffaa;
+      border:1px solid #ffffff88;
+      box-shadow: 0 8px 30px rgba(0,0,0,.10);
+      font-weight:600;
+      color:#222;
+      margin-bottom:14px;
+    }
+
+    .heart{
+      width:18px; height:18px;
+      display:inline-block;
+      transform: translateY(1px);
+    }
+
+    h1{
+      margin: 10px 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing:-0.02em;
+      line-height:1.05;
+      font-family: "Fraunces", Georgia, serif;
+      font-weight: 700;
+    }
+
+    p{
+      margin: 0 auto;
+      max-width: 40ch;
+      color: var(--muted);
+      font-size: 16px;
+      line-height:1.6;
+    }
+
+    .big-cta{
+      margin-top:18px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 0;
+      cursor:pointer;
+      font-weight:800;
+      font-size: 16px;
+      color:white;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 16px 35px rgba(255,45,85,.35);
+      transform: translateZ(0);
+      transition: transform .15s ease, filter .15s ease;
+      user-select:none;
+    }
+    .big-cta:hover{ transform: translateY(-1px) scale(1.01); filter: brightness(1.03); }
+    .big-cta:active{ transform: translateY(1px) scale(.99); }
+
+    .divider{
+      width: 72px;
+      height: 6px;
+      border-radius: 999px;
+      margin: 18px auto 14px;
+      background: #ffffffaa;
+    }
+
+    .buttons{
+      margin-top:18px;
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap;
+      position:relative;
+      min-height:64px;
+    }
+
+    .btn{
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid #ffffffaa;
+      cursor:pointer;
+      font-weight:800;
+      font-size: 15px;
+      background: #ffffffaa;
+      color:#222;
+      transition: transform .15s ease, filter .15s ease, background .15s ease;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+
+    .btn-yes{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color:white;
+      border:0;
+      box-shadow: 0 14px 30px rgba(255,45,85,.25);
+    }
+
+    .btn-no{
+      position:absolute;
+      right: 16px;
+      top: 4px;
+      background:#ffffffcc;
+    }
+
+    .sub{
+      margin-top:14px;
+      font-size: 13px;
+      color:#6c6c77;
+    }
+
+    .chapter{
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #5d5d67;
+    }
+
+    .choice-grid{
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .choice{
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid #ffffffaa;
+      background: #ffffffb8;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+    }
+    .choice:hover{ transform: translateY(-1px); background:#ffffffd6; }
+    .choice.selected{
+      border: 0;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 12px 22px rgba(255,45,85,.24);
+    }
+
+    .solo-line{
+      margin: 0;
+      min-height: 160px;
+      display: grid;
+      place-items: center;
+    }
+
+    /* screen transitions */
+    .screen{
+      display:none;
+      opacity:0;
+      transform: translateY(8px);
+      transition: opacity .35s ease, transform .35s ease;
+    }
+    .screen.active{
+      display:block;
+    }
+    .screen.show{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* floating hearts background */
+    .hearts{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:1;
+    }
+    .hearts span{
+      position:absolute;
+      bottom:-30px;
+      font-size: 18px;
+      opacity:.75;
+      animation: floatUp linear infinite;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.12));
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) translateX(0) rotate(0deg); opacity:.0; }
+      10%{ opacity:.75; }
+      to{ transform: translateY(-120vh) translateX(var(--drift)) rotate(22deg); opacity:0; }
+    }
+
+    /* confetti hearts */
+    canvas#fx{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:3;
+    }
+
+    /* subtle shine */
+    .shine{
+      position:absolute;
+      top:-40%;
+      left:-30%;
+      width: 60%;
+      height: 200%;
+      transform: rotate(18deg);
+      background: linear-gradient(90deg, transparent, #ffffff55, transparent);
+      opacity:.65;
+      animation: sweep 6s ease-in-out infinite;
+    }
+    @keyframes sweep{
+      0%,100%{ transform: translateX(-30%) rotate(18deg); opacity:.15; }
+      50%{ transform: translateX(180%) rotate(18deg); opacity:.45; }
+    }
+
+    /* small note */
+    .note{
+      margin-top:16px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background:#ffffffaa;
+      border:1px dashed #ffffff;
+      color:#333;
+      font-size: 14px;
+      line-height:1.5;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width:420px){
+      .card{ padding: 24px 18px; }
+      .btn-no{ right: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+  <canvas id="fx"></canvas>
+  <audio id="bgm" src="ILoveyou.mpeg" loop preload="auto"></audio>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="shine" aria-hidden="true"></div>
+
+      <!-- Screen 1 -->
+      <section class="screen active" id="screen1">
+        <div class="badge">
+          <svg class="heart" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 21s-7.2-4.35-9.6-8.8C.7 8.8 2.7 5.7 6 5.1c1.9-.35 3.5.5 4.3 1.45C11.1 5.6 12.7 4.75 14.6 5.1c3.3.6 5.3 3.7 3.6 7.1C19.2 16.65 12 21 12 21Z" fill="#ff2d55"/>
+          </svg>
+          A Tiny Love Story
+        </div>
+
+        <h1>Chapter 1: The First Day</h1>
+        <p>It all started on our first date, when time felt softer, the world got quieter, and one smile turned a simple moment into a memory I still carry.</p>
+        <div class="chapter">Tap to read the next chapter</div>
+
+        <button class="big-cta" id="startStory">
+          Next Chapter <span aria-hidden="true">❤️</span>
+        </button>
+
+      </section>
+
+      <!-- Screen 2 -->
+      <section class="screen" id="screen2">
+        <div class="badge">
+          <span aria-hidden="true">✨</span> Chapter 2
+        </div>
+
+        <h1>Chapter 2: The Little Moments</h1>
+        <p>Then came the laughs, the long talks, and all the tiny moments that stayed in my head. That is when I knew this was something real.</p>
+
+        <div class="divider" aria-hidden="true"></div>
+        <button class="big-cta" id="toChapter3">Next Chapter</button>
+      </section>
+
+      <!-- Screen 3 (new chapter) -->
+      <section class="screen" id="screen2b">
+        <div class="badge">
+          <span aria-hidden="true">🌙</span> Chapter 3
+        </div>
+
+        <h1>Chapter 3: The Realization</h1>
+        <p>Somewhere between the laughter and the late-night talks, I realized my favorite place was simply wherever you were.</p>
+
+        <div class="divider" aria-hidden="true"></div>
+        <button class="big-cta" id="toBigMoment">Turn The Page</button>
+      </section>
+
+      <!-- Screen 4 (solo transition) -->
+      <section class="screen" id="screen2c">
+        <h1 class="solo-line">Now for the big question...</h1>
+      </section>
+
+      <!-- Screen 5 -->
+      <section class="screen" id="screen3">
+        <div class="badge">
+          <span aria-hidden="true">❤️</span> The Big Question
+        </div>
+
+        <h1>Will you be my Valentine?</h1>
+        <p>This is the part where the music swells, the world pauses, and I ask the question I have been carrying all along.</p>
+
+        <div class="divider" aria-hidden="true"></div>
+
+        <div class="buttons" id="btnZone">
+          <button class="btn btn-yes" id="yesBtn">YES!</button>
+          <button class="btn btn-no" id="noBtn">No</button>
+        </div>
+
+        <div class="sub">The No button is dramatic. Don’t trust it.</div>
+      </section>
+
+      <!-- Screen 6 -->
+      <section class="screen" id="screen4">
+        <div class="badge">
+          <span aria-hidden="true">🎬</span> Chapter 4
+        </div>
+
+        <h1>Perfect. Pick the vibe.</h1>
+        <p>Choose how this Valentine chapter should feel:</p>
+
+        <div class="choice-grid" id="ideaGrid">
+          <button class="choice" data-idea="Cozy movie night">🎥 Movie Night</button>
+          <button class="choice" data-idea="Golden-hour picnic">🧺 Picnic Date</button>
+          <button class="choice" data-idea="Sweet dessert run">🍫 Dessert Mission</button>
+          <button class="choice" data-idea="Sunset walk together">🌅 Sunset Walk</button>
+        </div>
+
+        <button class="big-cta" id="toFinal" style="margin-top:14px;">Lock It In</button>
+      </section>
+
+      <!-- Screen 5 -->
+      <section class="screen" id="screen5">
+        <div class="badge">
+          <span aria-hidden="true">🌸</span> Final Chapter
+        </div>
+
+        <h1>It’s a date. 💖</h1>
+        <p id="finalLine">This love story just got its best chapter yet.</p>
+
+        <div class="note">
+          Screenshot this and send it!
+        </div>
+
+        <button class="big-cta" id="restart">Replay</button>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // ---------- helpers ----------
+    const $ = (id) => document.getElementById(id);
+    const bgm = $("bgm");
+
+    function startMusic(){
+      if(!bgm) return;
+      bgm.volume = 0.45;
+      bgm.play().catch(() => {});
+    }
+
+    ["click", "touchstart", "keydown"].forEach((evt) => {
+      window.addEventListener(evt, startMusic, { once: true });
+    });
+
+    function showScreen(fromId, toId){
+      const from = $(fromId);
+      const to = $(toId);
+
+      // hide old
+      from.classList.remove("show");
+      setTimeout(() => {
+        from.classList.remove("active");
+        // show new
+        to.classList.add("active");
+        requestAnimationFrame(() => to.classList.add("show"));
+      }, 220);
+    }
+
+    function random(min, max){ return Math.random() * (max - min) + min; }
+
+    // ---------- background hearts ----------
+    const hearts = $("hearts");
+    const heartChars = ["❤️","💗","💖","💘","💕","💞"];
+    const HEART_COUNT = 18;
+
+    for(let i=0;i<HEART_COUNT;i++){
+      const s = document.createElement("span");
+      s.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+      s.style.left = random(0, 100) + "vw";
+      s.style.animationDuration = random(6, 12) + "s";
+      s.style.animationDelay = random(0, 6) + "s";
+      s.style.setProperty("--drift", (random(-20, 20)) + "vw");
+      s.style.fontSize = random(14, 26) + "px";
+      hearts.appendChild(s);
+    }
+
+    // ---------- confetti hearts ----------
+    const canvas = $("fx");
+    const ctx = canvas.getContext("2d");
+    let W, H, particles = [], raf;
+
+    function resize(){
+      W = canvas.width = window.innerWidth * devicePixelRatio;
+      H = canvas.height = window.innerHeight * devicePixelRatio;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    function spawnHeartsBurst(){
+      const centerX = W * 0.5, centerY = H * 0.35;
+      const count = 110;
+
+      for(let i=0;i<count;i++){
+        const angle = random(0, Math.PI * 2);
+        const speed = random(2, 8) * devicePixelRatio;
+        particles.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - random(1, 4) * devicePixelRatio,
+          g: random(0.03, 0.08) * devicePixelRatio,
+          r: random(6, 12) * devicePixelRatio,
+          rot: random(0, Math.PI),
+          vr: random(-0.15, 0.15),
+          life: random(70, 120),
+          ch: heartChars[Math.floor(Math.random()*heartChars.length)]
+        });
+      }
+
+      if(!raf) tick();
+    }
+
+    function tick(){
+      raf = requestAnimationFrame(tick);
+      ctx.clearRect(0,0,W,H);
+
+      particles = particles.filter(p => p.life > 0);
+      for(const p of particles){
+        p.life -= 1;
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = Math.max(0, Math.min(1, p.life / 90));
+        ctx.font = `${p.r}px system-ui, Segoe UI, Apple Color Emoji`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(p.ch, 0, 0);
+        ctx.restore();
+      }
+
+      if(particles.length === 0){
+        cancelAnimationFrame(raf);
+        raf = null;
+      }
+    }
+
+    // ---------- "No" button dodge ----------
+    const zone = $("btnZone");
+    const noBtn = $("noBtn");
+    const yesBtn = $("yesBtn");
+    const finalLine = $("finalLine");
+    const ideas = Array.from(document.querySelectorAll(".choice"));
+    const fallbackIdeas = [
+      "Cozy movie night",
+      "Golden-hour picnic",
+      "Sweet dessert run",
+      "Sunset walk together"
+    ];
+    let selectedIdea = "";
+    const MAX_NO_CHASES = 5;
+    let noChases = 0;
+    let noHidden = false;
+    let bigQuestionTimer = null;
+
+    function moveNo(){
+      if(noHidden) return;
+      const rect = zone.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      // keep within zone
+      const pad = 6;
+      const maxX = rect.width - btnRect.width - pad;
+      const maxY = rect.height - btnRect.height - pad;
+
+      const x = random(pad, Math.max(pad, maxX));
+      const y = random(pad, Math.max(pad, maxY));
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+      noBtn.style.right = "auto";
+      noBtn.style.position = "absolute";
+    }
+
+    function hideNoBehindYes(){
+      const zoneRect = zone.getBoundingClientRect();
+      const yesRect = yesBtn.getBoundingClientRect();
+      const noRect = noBtn.getBoundingClientRect();
+      const x = (yesRect.left - zoneRect.left) + (yesRect.width - noRect.width) / 2;
+      const y = (yesRect.top - zoneRect.top) + (yesRect.height - noRect.height) / 2;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      noBtn.style.position = "absolute";
+      noBtn.style.opacity = "0";
+      noBtn.style.pointerEvents = "none";
+      noBtn.style.zIndex = "0";
+
+      yesBtn.style.position = "relative";
+      yesBtn.style.zIndex = "2";
+      noHidden = true;
+    }
+
+    function chaseNo(e){
+      if(noHidden) return;
+      if(e) e.preventDefault();
+      noChases += 1;
+      if(noChases >= MAX_NO_CHASES){
+        hideNoBehindYes();
+        return;
+      }
+      moveNo();
+    }
+
+    noBtn.addEventListener("mouseenter", chaseNo);
+    noBtn.addEventListener("touchstart", chaseNo, {passive:false});
+    noBtn.addEventListener("click", chaseNo);
+
+    function resetNoButtonState(){
+      noChases = 0;
+      noHidden = false;
+      noBtn.style.opacity = "1";
+      noBtn.style.pointerEvents = "auto";
+      noBtn.style.zIndex = "1";
+      yesBtn.style.position = "";
+      yesBtn.style.zIndex = "";
+    }
+
+    // ---------- flow ----------
+    function goYes(){
+      showScreen("screen3", "screen4");
+    }
+
+    function goFinal(){
+      if(!selectedIdea){
+        selectedIdea = fallbackIdeas[Math.floor(Math.random() * fallbackIdeas.length)];
+      }
+      finalLine.textContent = `Next scene: ${selectedIdea}. Best Valentine arc ever.`;
+      showScreen("screen4", "screen5");
+      spawnHeartsBurst();
+    }
+
+    $("startStory").addEventListener("click", () => {
+      showScreen("screen1", "screen2");
+    });
+
+    $("toChapter3").addEventListener("click", () => {
+      showScreen("screen2", "screen2b");
+    });
+
+    $("toBigMoment").addEventListener("click", () => {
+      showScreen("screen2b", "screen2c");
+      if(bigQuestionTimer) clearTimeout(bigQuestionTimer);
+      bigQuestionTimer = setTimeout(() => {
+        bigQuestionTimer = null;
+        showScreen("screen2c", "screen3");
+        setTimeout(() => {
+          resetNoButtonState();
+          moveNo();
+        }, 50);
+      }, 1450);
+    });
+
+    yesBtn.addEventListener("click", goYes);
+    $("toFinal").addEventListener("click", goFinal);
+
+    ideas.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        ideas.forEach((item) => item.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedIdea = btn.dataset.idea || "";
+      });
+    });
+
+    $("restart").addEventListener("click", () => {
+      if(bigQuestionTimer) clearTimeout(bigQuestionTimer);
+      bigQuestionTimer = null;
+      resetNoButtonState();
+      selectedIdea = "";
+      ideas.forEach((item) => item.classList.remove("selected"));
+      showScreen("screen5", "screen1");
+    });
+
+    // start animation on first screen
+    requestAnimationFrame(() => $("screen1").classList.add("show"));
+  </script>
+</body>
+</html>
